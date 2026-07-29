@@ -8,5 +8,10 @@ Disallow: /vapid_public.php
 Disallow: /push_config.php
 Disallow: /config.php
 Disallow: /functions.php
+Disallow: /download_icons.php
+Disallow: /newsletter_export.php
+Disallow: /newsletter_subscribe.php
+Disallow: /admin_auth.php
+Disallow: /admin_auth_config.php
 
 Sitemap: https://www.technewszone.it/sitemap.php

@@ -1,6 +1,9 @@
 <?php
 // FILE: download_icons.php
 
+require_once __DIR__ . '/admin_auth.php';
+require_admin_auth();
+
 // -----------------------------------------------------------
 // 1. CONFIGURAZIONE
 // -----------------------------------------------------------
