@@ -6,6 +6,9 @@
 // compaiono dentro push_config.php, poi CANCELLA questo file dal server.
 // =================================================================
 
+require_once __DIR__ . '/admin_auth.php';
+require_admin_auth();
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Minishlink\WebPush\VAPID;

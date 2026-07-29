@@ -22,6 +22,9 @@ lancia il comando lì, e carica la cartella `vendor/` generata insieme agli altr
 ## Passo 2 — Genera le chiavi VAPID (una sola volta)
 
 1. Apri nel browser: `https://iltuosito/generate_keys.php`
+   (ti verrà chiesto un utente/password: sono in `admin_auth_config.php`,
+   vedi il file per cambiarli — proteggono anche `download_icons.php` e
+   `update_cache.php` da accessi non autorizzati).
 2. Compaiono due chiavi (pubblica e privata).
 3. Aprile `push_config.php` e incolla i due valori in:
    - `VAPID_PUBLIC_KEY`

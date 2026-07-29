@@ -12,9 +12,14 @@ $file = __DIR__ . '/newsletter_emails.csv';
 
 session_start();
 
-// Login semplice
+// Blocco di sicurezza: rifiuta l'accesso finché non viene impostata una password reale
+if ($PASSWORD === 'CAMBIA_QUESTA_PASSWORD') {
+    exit('Imposta prima una password in newsletter_export.php (variabile $PASSWORD) prima di usare questa pagina.');
+}
+
+// Login semplice (confronto timing-safe)
 if (isset($_POST['pwd'])) {
-    if ($_POST['pwd'] === $PASSWORD) {
+    if (hash_equals($PASSWORD, (string)$_POST['pwd'])) {
         $_SESSION['nl_auth'] = true;
     } else {
         $err = 'Password errata';

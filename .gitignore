@@ -1,0 +1,14 @@
+# Dipendenze (si generano con "composer require")
+/vendor/
+
+# Cache notizie generata automaticamente da update_cache.php
+rss_cache.json
+rss_cache.dat
+
+# Dati raccolti a runtime (iscritti, iscrizioni push) — non vanno versionati
+newsletter_emails.csv
+push_subscriptions.json
+push_state.json
+
+# File locali / editor
+.DS_Store

@@ -4,6 +4,8 @@
 // =================================================================
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/classifier.php';
+require_once __DIR__ . '/admin_auth.php';
+require_admin_auth();
 
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
