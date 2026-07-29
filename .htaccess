@@ -2,6 +2,15 @@
 # .htaccess — TechNewsZone
 # =================================================================
 
+# --- Passa l'header Authorization a PHP (necessario su PHP-CGI/FastCGI,
+# altrimenti $_SERVER['PHP_AUTH_USER'] resta sempre vuoto e il login
+# degli script protetti da admin_auth.php non funziona mai) ---
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:Authorization} ^(.+)$
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+</IfModule>
+
 # --- Canonicalizzazione: forza HTTPS e dominio con www ---
 <IfModule mod_rewrite.c>
     RewriteEngine On
