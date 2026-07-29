@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /update_cache.php
+Disallow: /send_push.php
+Disallow: /subscribe.php
+Disallow: /generate_keys.php
+Disallow: /vapid_public.php
+Disallow: /push_config.php
+Disallow: /config.php
+Disallow: /functions.php
+
+Sitemap: https://www.technewszone.it/sitemap.php
