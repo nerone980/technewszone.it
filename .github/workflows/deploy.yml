@@ -1,0 +1,41 @@
+name: Deploy to Aruba FTP
+
+# Il trigger: la pipeline parte in automatico ad ogni push sul branch 'main'
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Sincronizzazione FTP
+    runs-on: ubuntu-latest
+
+    steps:
+      # Task 1: Effettua il checkout del codice sul runner
+      - name: Checkout del codice
+        uses: actions/checkout@v4
+
+      # Task 2: Carica i file su Aruba
+      - name: Sincronizzazione FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Importante: definisci la cartella pubblica di Aruba
+          server-dir: /www.technewszone.it/
+          # Protegge dalla cancellazione i file/cartelle che vivono SOLO sul
+          # server (generati a runtime o installati manualmente) e non sono
+          # tracciati in git: cache notizie, iscritti newsletter, iscrizioni
+          # push, dipendenze Composer, icone scaricate da download_icons.php.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            rss_cache.json
+            rss_cache.dat
+            newsletter_emails.csv
+            push_subscriptions.json
+            push_state.json
+            vendor/**
+            img/**
