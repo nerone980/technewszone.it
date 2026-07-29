@@ -25,3 +25,17 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           # Importante: definisci la cartella pubblica di Aruba
           server-dir: /www.technewszone.it/
+          # Protegge dalla cancellazione i file/cartelle che vivono SOLO sul
+          # server (generati a runtime o installati manualmente) e non sono
+          # tracciati in git: cache notizie, iscritti newsletter, iscrizioni
+          # push, dipendenze Composer, icone scaricate da download_icons.php.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            rss_cache.json
+            rss_cache.dat
+            newsletter_emails.csv
+            push_subscriptions.json
+            push_state.json
+            vendor/**
+            img/**
