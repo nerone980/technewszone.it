@@ -295,19 +295,6 @@ body{
 .site-footer{border-top:1px solid var(--line);margin-top:40px;padding:30px 0;text-align:center}
 .footer-brand{font-weight:700;font-size:1.05rem;margin-bottom:12px}
 .footer-brand b{color:var(--amber)}
-.nl-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:22px}
-.nl-title{font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:6px}
-.nl-title i{color:var(--amber);margin-right:6px}
-.nl-desc{font-size:.8rem;color:var(--ink-dim);margin:0 0 14px;line-height:1.4}
-.nl-form{display:flex;flex-direction:column;gap:8px}
-.nl-form input[type=email]{background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);
-    font-family:'IBM Plex Mono',monospace;font-size:.82rem;padding:10px 12px;outline:none}
-.nl-form input[type=email]:focus{border-color:var(--amber)}
-.nl-form button{background:var(--amber);border:none;border-radius:8px;color:#0a0c0f;font-weight:700;
-    font-size:.85rem;padding:10px;cursor:pointer;font-family:inherit}
-.nl-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.nl-msg{font-size:.8rem;margin-top:10px;min-height:1em}
-.nl-msg.ok{color:var(--up)}.nl-msg.err{color:var(--down)}
 .footer-links{display:flex;gap:22px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
 .footer-links a{color:var(--ink-dim);text-decoration:none;font-size:.88rem}
 .footer-links a:hover{color:var(--amber)}
@@ -515,17 +502,6 @@ body{
                 </a>
                 <?php $is_first = false; endforeach; ?>
             </nav>
-
-            <div class="nl-box">
-                <div class="nl-title"><i class="fas fa-envelope"></i> Newsletter</div>
-                <p class="nl-desc">Le notizie migliori nella tua email. Niente spam.</p>
-                <div class="nl-form" id="nlForm">
-                    <input type="email" id="nlEmail" placeholder="latua@email.it" autocomplete="email">
-                    <input type="text" id="nlHp" class="nl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-                    <button onclick="subscribeNewsletter()">Iscriviti</button>
-                </div>
-                <div class="nl-msg" id="nlMsg"></div>
-            </div>
         </aside>
     </div>
 
@@ -574,33 +550,6 @@ function shareArticle(btn){
             btn.innerHTML='<i class="fas fa-check"></i>';
             setTimeout(()=>btn.innerHTML=old,1500);
         }).catch(()=>{});
-    }
-}
-
-// iscrizione newsletter
-async function subscribeNewsletter(){
-    const email=document.getElementById('nlEmail').value.trim();
-    const hp=document.getElementById('nlHp').value;
-    const msg=document.getElementById('nlMsg');
-    if(!email || email.indexOf('@')<1){
-        msg.className='nl-msg err'; msg.textContent='Inserisci un\'email valida.'; return;
-    }
-    msg.className='nl-msg'; msg.textContent='Invio…';
-    try{
-        const r=await fetch('newsletter_subscribe.php',{
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({email:email, website:hp})
-        });
-        const d=await r.json();
-        if(d.ok){
-            msg.className='nl-msg ok';
-            msg.textContent=d.already?'Sei già iscritto. Grazie!':'Iscrizione confermata. Grazie!';
-            document.getElementById('nlForm').style.display='none';
-        }else{
-            msg.className='nl-msg err'; msg.textContent=d.error||'Errore, riprova.';
-        }
-    }catch(e){
-        msg.className='nl-msg err'; msg.textContent='Errore di connessione.';
     }
 }
 

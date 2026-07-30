@@ -207,19 +207,6 @@ body{padding-top:144px}
 .m-search-info b{color:var(--amber)}
 .m-noresults{text-align:center;color:var(--ink-faint);padding:30px 0;display:none}
 .m-footer{border-top:1px solid var(--line);margin-top:20px;padding:24px 14px 10px;text-align:center}
-.nl-box-m{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:20px;text-align:left}
-.nl-title-m{font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:6px}
-.nl-title-m i{color:var(--amber);margin-right:6px}
-.nl-desc-m{font-size:.82rem;color:var(--ink-dim);margin:0 0 12px}
-.nl-box-m input[type=email]{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--line);
-    border-radius:8px;color:var(--ink);font-family:'IBM Plex Mono',monospace;font-size:.85rem;padding:11px 12px;
-    outline:none;margin-bottom:8px}
-.nl-box-m input[type=email]:focus{border-color:var(--amber)}
-.nl-box-m button{width:100%;background:var(--amber);border:none;border-radius:8px;color:#0a0c0f;font-weight:700;
-    font-size:.88rem;padding:11px;font-family:inherit}
-.nl-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.nl-msg{font-size:.82rem;margin-top:10px}
-.nl-msg.ok{color:var(--up)}.nl-msg.err{color:var(--down)}
 .m-footer-links{display:flex;gap:18px;justify-content:center;margin-bottom:10px}
 .m-footer-links a{color:var(--ink-dim);text-decoration:none;font-size:.82rem}
 .m-footer-note{font-size:.64rem;color:var(--ink-faint)}
@@ -389,16 +376,6 @@ body{padding-top:178px}
     <?php $is_first = false; endforeach; ?>
 
     <footer class="m-footer">
-        <div class="nl-box-m">
-            <div class="nl-title-m"><i class="fas fa-envelope"></i> Newsletter</div>
-            <p class="nl-desc-m">Le notizie migliori nella tua email.</p>
-            <div id="nlForm">
-                <input type="email" id="nlEmail" placeholder="latua@email.it" autocomplete="email">
-                <input type="text" id="nlHp" class="nl-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-                <button onclick="subscribeNewsletter()">Iscriviti</button>
-            </div>
-            <div class="nl-msg" id="nlMsg"></div>
-        </div>
         <nav class="m-footer-links">
             <a href="chi-siamo.php">Chi siamo</a>
             <a href="privacy.php">Privacy</a>
@@ -444,33 +421,6 @@ function shareArticle(btn){
             btn.innerHTML='<i class="fas fa-check"></i>';
             setTimeout(()=>btn.innerHTML=old,1500);
         }).catch(()=>{});
-    }
-}
-
-// iscrizione newsletter
-async function subscribeNewsletter(){
-    const email=document.getElementById('nlEmail').value.trim();
-    const hp=document.getElementById('nlHp').value;
-    const msg=document.getElementById('nlMsg');
-    if(!email || email.indexOf('@')<1){
-        msg.className='nl-msg err'; msg.textContent='Inserisci un\'email valida.'; return;
-    }
-    msg.className='nl-msg'; msg.textContent='Invio…';
-    try{
-        const r=await fetch('newsletter_subscribe.php',{
-            method:'POST', headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({email:email, website:hp})
-        });
-        const d=await r.json();
-        if(d.ok){
-            msg.className='nl-msg ok';
-            msg.textContent=d.already?'Sei già iscritto. Grazie!':'Iscrizione confermata. Grazie!';
-            document.getElementById('nlForm').style.display='none';
-        }else{
-            msg.className='nl-msg err'; msg.textContent=d.error||'Errore, riprova.';
-        }
-    }catch(e){
-        msg.className='nl-msg err'; msg.textContent='Errore di connessione.';
     }
 }
 
