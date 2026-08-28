@@ -23,8 +23,10 @@ lancia il comando lì, e carica la cartella `vendor/` generata insieme agli altr
 
 1. Apri nel browser: `https://iltuosito/generate_keys.php`
    (ti verrà chiesto un utente/password: sono in `admin_auth_config.php`,
-   vedi il file per cambiarli — proteggono anche `download_icons.php` e
-   `update_cache.php` da accessi non autorizzati).
+   vedi il file per cambiarli — proteggono anche `download_icons.php`.
+   `update_cache.php` invece non richiede login, perché deve restare
+   raggiungibile da cron via URL su hosting come Aruba; si protegge da
+   solo rifiutando refresh troppo ravvicinati, vedi il commento nel file).
 2. Compaiono due chiavi (pubblica e privata).
 3. Aprile `push_config.php` e incolla i due valori in:
    - `VAPID_PUBLIC_KEY`

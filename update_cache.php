@@ -4,14 +4,27 @@
 // =================================================================
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/classifier.php';
-require_once __DIR__ . '/admin_auth.php';
-require_admin_auth();
 
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 set_time_limit(300);
 
 $cache_file = CACHE_FILE;
+
+// Anti-abuso: questa pagina non è più protetta da login, perché alcuni hosting
+// (es. Aruba) permettono al cron di chiamare solo l'URL "nudo" dello script,
+// senza credenziali. Per evitare che chiunque trovi l'URL possa far ripartire
+// di continuo il giro completo di ~50 feed, se la cache è già stata aggiornata
+// di recente lo script si ferma qui senza rifare nulla.
+if (file_exists($cache_file) && (time() - filemtime($cache_file)) < CACHE_LIFETIME) {
+    $wait_min = (int)ceil((CACHE_LIFETIME - (time() - filemtime($cache_file))) / 60);
+    echo '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8">'
+       . '<title>Aggiornamento Cache — TechZone</title></head>'
+       . '<body style="background:#0a0c0f;color:#8b949e;font-family:sans-serif;text-align:center;padding:60px 20px">'
+       . "<p>Cache già aggiornata di recente. Prossimo refresh utile tra circa {$wait_min} minuti.</p>"
+       . '</body></html>';
+    exit;
+}
 
 function fetch_feed($url) {
     $ch = curl_init();
