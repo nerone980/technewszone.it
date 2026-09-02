@@ -265,7 +265,7 @@ body{padding-top:178px}
         </div>
     </div>
     <?php if (!empty($ticker_news)): ?>
-    <a class="nf-m" id="newsflash" href="<?php echo htmlspecialchars($ticker_news[0]['link']); ?>" target="_blank" rel="noopener">
+    <a class="nf-m" id="newsflash" href="<?php echo htmlspecialchars($ticker_news[0]['link']); ?>" target="_blank" rel="noopener nofollow">
         <span class="nf-m-tag"><span class="nf-m-dot"></span>NEWS</span>
         <span class="nf-m-title" id="nf-title"><?php echo htmlspecialchars($ticker_news[0]['title']); ?></span>
     </a>
@@ -278,8 +278,8 @@ body{padding-top:178px}
 </header>
 
 <?php if ($hero_article): ?>
-<a class="m-hero" href="<?php echo htmlspecialchars($hero_article['link']); ?>" target="_blank" rel="noopener">
-    <img src="<?php echo htmlspecialchars($hero_article['image_url']); ?>" loading="lazy" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($hero_article['title'],0,60)); ?>">
+<a class="m-hero" href="<?php echo htmlspecialchars($hero_article['link']); ?>" target="_blank" rel="noopener nofollow">
+    <img src="<?php echo htmlspecialchars($hero_article['image_url']); ?>" fetchpriority="high" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($hero_article['title'],0,60)); ?>">
     <div class="b">
         <span class="m-hero-tag">IN EVIDENZA</span>
         <h1><?php echo htmlspecialchars($hero_article['title']); ?></h1>
@@ -379,7 +379,7 @@ body{padding-top:178px}
                 <img src="<?php echo htmlspecialchars($art['image_url']); ?>" loading="lazy" decoding="async" width="80" height="80" alt="<?php echo htmlspecialchars(mb_substr($art['title'],0,60)); ?>">
             <?php endif; ?>
             <div class="b">
-                <a class="mtitle" href="<?php echo htmlspecialchars($art['link']); ?>" target="_blank" rel="noopener">
+                <a class="mtitle" href="<?php echo htmlspecialchars($art['link']); ?>" target="_blank" rel="noopener nofollow">
                     <?php if ($is_new): ?><span class="tag-new">NEW</span><?php endif; ?>
                     <?php echo htmlspecialchars($art['title']); ?>
                 </a>
