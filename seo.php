@@ -86,7 +86,16 @@ HTML;
 
 // --- Funzione che stampa il JSON-LD (dati strutturati) ---
 function seo_render_jsonld() {
-    global $SEO_SITE_NAME, $SEO_BASE_URL, $SEO_active_cat, $grouped_news_data;
+    global $SEO_SITE_NAME, $SEO_BASE_URL, $SEO_active_cat, $grouped_news_data, $SEO_DEFAULT_IMG;
+
+    // 0) Organization — aiuta Google a riconoscere il sito come marchio/entità
+    $organization = [
+        '@context' => 'https://schema.org',
+        '@type'    => 'Organization',
+        'name'     => $SEO_SITE_NAME,
+        'url'      => $SEO_BASE_URL . '/',
+        'logo'     => $SEO_DEFAULT_IMG,
+    ];
 
     // 1) WebSite + SearchAction
     $website = [
@@ -117,6 +126,7 @@ function seo_render_jsonld() {
     ];
 
     $flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+    echo '<script type="application/ld+json">' . json_encode($organization, $flags) . '</script>' . "\n";
     echo '<script type="application/ld+json">' . json_encode($website, $flags) . '</script>' . "\n";
     if ($items) {
         echo '<script type="application/ld+json">' . json_encode($itemList, $flags) . '</script>' . "\n";

@@ -367,7 +367,7 @@ body{
 
     <div class="mstrip">
         <?php if (!empty($ticker_news)): ?>
-        <a class="newsflash" id="newsflash" href="#" target="_blank" rel="noopener">
+        <a class="newsflash" id="newsflash" href="#" target="_blank" rel="noopener nofollow">
             <span class="nf-tag"><span class="nf-dot"></span>ATTUALITÀ</span>
             <span class="nf-body">
                 <span class="nf-title" id="nf-title"><?php echo htmlspecialchars($ticker_news[0]['title']); ?></span>
@@ -391,8 +391,8 @@ body{
     <?php if (!empty($hero_articles)): ?>
     <div class="hero-grid">
         <?php $lead = $hero_articles[0]; ?>
-        <a class="hero-lead" href="<?php echo htmlspecialchars($lead['link']); ?>" target="_blank" rel="noopener">
-            <img src="<?php echo htmlspecialchars($lead['image_url']); ?>" loading="lazy" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($lead['title'],0,60)); ?>">
+        <a class="hero-lead" href="<?php echo htmlspecialchars($lead['link']); ?>" target="_blank" rel="noopener nofollow">
+            <img src="<?php echo htmlspecialchars($lead['image_url']); ?>" fetchpriority="high" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($lead['title'],0,60)); ?>">
             <div class="hb">
                 <span class="hero-tag">ULTIME 24H</span>
                 <h1><?php echo htmlspecialchars($lead['title']); ?></h1>
@@ -403,8 +403,8 @@ body{
         <?php if (count($hero_articles) > 1): ?>
         <div class="hero-side">
             <?php foreach (array_slice($hero_articles, 1, 3) as $side): ?>
-            <a class="hero-card" href="<?php echo htmlspecialchars($side['link']); ?>" target="_blank" rel="noopener">
-                <img src="<?php echo htmlspecialchars($side['image_url']); ?>" loading="lazy" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($side['title'],0,60)); ?>">
+            <a class="hero-card" href="<?php echo htmlspecialchars($side['link']); ?>" target="_blank" rel="noopener nofollow">
+                <img src="<?php echo htmlspecialchars($side['image_url']); ?>" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($side['title'],0,60)); ?>">
                 <div>
                     <h3><?php echo htmlspecialchars($side['title']); ?></h3>
                     <div class="hero-meta"><span class="src"><?php echo htmlspecialchars($side['source']); ?></span><span>·</span><span><?php echo date('d/m · H:i', $side['timestamp']); ?></span></div>
@@ -523,7 +523,7 @@ body{
                             <img class="card-img" src="<?php echo htmlspecialchars($art['image_url']); ?>" loading="lazy" decoding="async" width="400" height="160" alt="<?php echo htmlspecialchars(mb_substr($art['title'],0,60)); ?>">
                         <?php endif; ?>
                         <div class="card-body">
-                            <a class="card-title" href="<?php echo htmlspecialchars($art['link']); ?>" target="_blank" rel="noopener">
+                            <a class="card-title" href="<?php echo htmlspecialchars($art['link']); ?>" target="_blank" rel="noopener nofollow">
                                 <?php if ($is_new): ?><span class="tag-new">NEW</span><?php endif; ?>
                                 <?php echo htmlspecialchars($art['title']); ?>
                             </a>
