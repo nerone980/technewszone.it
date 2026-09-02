@@ -37,6 +37,9 @@ usort($home_news, fn($a, $b) => $b['timestamp'] - $a['timestamp']);
 if (!empty($home_news)) {
     $grouped_news_data = array_merge(['Home' => array_slice($home_news, 0, 24)], $grouped_news_data);
 }
+// La notizia più recente CON immagine, per la vetrina in cima alla pagina
+$hero_pool = array_values(array_filter($home_news, fn($a) => !empty($a['image_url'])));
+$hero_article = $hero_pool[0] ?? null;
 require_once __DIR__ . '/seo.php';
 ?>
 <!DOCTYPE html>
@@ -122,17 +125,27 @@ body{padding-top:144px}
 #m-fng-val{font-family:'IBM Plex Mono',monospace;font-size:1.7rem;font-weight:600;line-height:1.1}
 #m-fng-class{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
 
+/* HERO — vetrina in evidenza */
+.m-hero{display:block;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin:14px 14px 0;text-decoration:none}
+.m-hero img{width:100%;height:170px;object-fit:cover;display:block;filter:saturate(.9)}
+.m-hero .b{padding:15px}
+.m-hero-tag{display:inline-flex;font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;letter-spacing:.08em;color:var(--amber);background:var(--amber-soft);padding:3px 8px;border-radius:6px;margin-bottom:9px}
+.m-hero h1{font-size:1.08rem;line-height:1.3;margin:0 0 8px;color:var(--ink);font-weight:700}
+.m-hero-meta{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--ink-faint)}
+
 /* CONTAINER + SECTIONS */
 .feed{padding:14px}
 .cat{display:none}.cat.active{display:block}
 .cat-title{font-size:1.15rem;font-weight:700;margin:4px 0 14px;letter-spacing:-.02em}
 
-.mcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
-.mcard img{width:100%;height:150px;object-fit:cover;background:#06080a;display:block;filter:saturate(.9)}
-.mcard .b{padding:14px}
-.mtitle{color:var(--ink);font-weight:600;font-size:1rem;line-height:1.34;text-decoration:none;display:block}
-.msum{color:var(--ink-dim);font-size:.8rem;line-height:1.5;margin:9px 0 0}
-.mfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+/* card lista compatta: miniatura a sinistra, testo a destra, più notizie a schermo */
+.mcard{display:flex;gap:12px;background:transparent;border:none;border-bottom:1px solid var(--line);border-radius:0;overflow:visible;margin-bottom:0;padding:13px 0}
+.cat .mcard:last-child{border-bottom:none}
+.mcard img{width:80px;height:80px;border-radius:9px;flex-shrink:0;object-fit:cover;background:#06080a;display:block;filter:saturate(.9)}
+.mcard .b{padding:0;flex:1;min-width:0}
+.mtitle{color:var(--ink);font-weight:600;font-size:.92rem;line-height:1.32;text-decoration:none;display:block}
+.msum{display:none}
+.mfoot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:0;border-top:none}
 .mshare{margin-left:auto;width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:transparent;
     color:var(--ink-dim);display:inline-flex;align-items:center;justify-content:center;font-size:.9rem}
 .mshare:active{border-color:var(--amber);color:var(--amber)}
@@ -264,6 +277,17 @@ body{padding-top:178px}
     <div class="tk"><div class="tk-row" id="ticker">Sincronizzazione…</div></div>
 </header>
 
+<?php if ($hero_article): ?>
+<a class="m-hero" href="<?php echo htmlspecialchars($hero_article['link']); ?>" target="_blank" rel="noopener">
+    <img src="<?php echo htmlspecialchars($hero_article['image_url']); ?>" loading="lazy" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($hero_article['title'],0,60)); ?>">
+    <div class="b">
+        <span class="m-hero-tag">IN EVIDENZA</span>
+        <h1><?php echo htmlspecialchars($hero_article['title']); ?></h1>
+        <div class="m-hero-meta"><span class="src"><?php echo htmlspecialchars($hero_article['source']); ?></span><span>·</span><span><?php echo date('d/m · H:i', $hero_article['timestamp']); ?></span></div>
+    </div>
+</a>
+<?php endif; ?>
+
 <div class="chips" id="chips">
     <?php if (!empty($partners)): ?>
     <a class="chip chip-partner" href="#" data-target="mpartner" onclick="showCat(this); return false;"><i class="fas fa-handshake cat-ico" aria-hidden="true"></i> Offerte Partner</a>
@@ -352,7 +376,7 @@ body{padding-top:178px}
         <?php foreach ($arts as $art): $is_new = (time() - $art['timestamp']) < 7200; ?>
         <article class="mcard">
             <?php if (!empty($art['image_url'])): ?>
-                <img src="<?php echo htmlspecialchars($art['image_url']); ?>" loading="lazy" decoding="async" width="400" height="150" alt="<?php echo htmlspecialchars(mb_substr($art['title'],0,60)); ?>">
+                <img src="<?php echo htmlspecialchars($art['image_url']); ?>" loading="lazy" decoding="async" width="80" height="80" alt="<?php echo htmlspecialchars(mb_substr($art['title'],0,60)); ?>">
             <?php endif; ?>
             <div class="b">
                 <a class="mtitle" href="<?php echo htmlspecialchars($art['link']); ?>" target="_blank" rel="noopener">
@@ -387,6 +411,7 @@ body{padding-top:178px}
 
 <nav class="bnav">
     <button class="on" onclick="goHome(this)"><i class="fas fa-bolt"></i>HOME</button>
+    <button onclick="focusSearch()"><i class="fas fa-magnifying-glass"></i>CERCA</button>
     <button onclick="openDrawer()"><i class="fas fa-layer-group"></i>CANALI</button>
     <button onclick="forceUpdate()"><i class="fas fa-rotate-right"></i>AGGIORNA</button>
 </nav>
@@ -474,6 +499,7 @@ function showCat(el){
 }
 function pickCat(el){showCat(el);closeDrawer();}
 function goHome(){const first=document.querySelector('.chip');if(first)showCat(first);}
+function focusSearch(){window.scrollTo({top:0,behavior:'smooth'});if(searchInput)setTimeout(()=>searchInput.focus(),300);}
 function openDrawer(){document.getElementById('drawer').classList.add('open');}
 function closeDrawer(){document.getElementById('drawer').classList.remove('open');}
 

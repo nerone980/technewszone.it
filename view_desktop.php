@@ -38,6 +38,10 @@ usort($home_news, fn($a, $b) => $b['timestamp'] - $a['timestamp']);
 if (!empty($home_news)) {
     $grouped_news_data = array_merge(['Home' => array_slice($home_news, 0, 24)], $grouped_news_data);
 }
+// Le 4 notizie più recenti CON immagine, per la vetrina in cima alla pagina
+$hero_articles = array_slice(array_values(array_filter($home_news, fn($a) => !empty($a['image_url']))), 0, 4);
+// Categorie principali: mostrate come tab in evidenza nella nav; le altre come tag secondari
+$PRIMARY_CATS = ['Home', 'Tecnologia', 'Crypto', 'Finanza', 'Gaming'];
 $INITIAL_LOAD_COUNT = 8;
 require_once __DIR__ . '/seo.php';
 ?>
@@ -148,6 +152,51 @@ body{
 .t-up{color:var(--up)}.t-down{color:var(--down)}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
+/* MARKET STRIP — newsflash + ticker uniti in un'unica fascia */
+.mstrip{display:flex;align-items:stretch;margin:22px 0 26px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+.mstrip .newsflash{border:none;border-left:3px solid var(--amber);border-right:1px solid var(--line);border-radius:0;margin:0;height:44px;flex-shrink:0;max-width:440px}
+.mstrip .ticker{border:none;border-radius:0;margin:0;height:44px;flex:1}
+
+/* HERO — vetrina ultime 24h */
+.hero-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:30px}
+@media(max-width:980px){.hero-grid{grid-template-columns:1fr}}
+.hero-lead{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:border-color .2s}
+.hero-lead:hover{border-color:#2c3640}
+.hero-lead img{width:100%;height:300px;object-fit:cover;display:block;filter:saturate(.9)}
+.hero-lead .hb{padding:22px}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;letter-spacing:.1em;color:var(--amber);background:var(--amber-soft);padding:4px 10px;border-radius:6px;margin-bottom:12px}
+.hero-lead h1{font-size:1.55rem;line-height:1.24;letter-spacing:-.01em;margin:0 0 10px;color:var(--ink);font-weight:700}
+.hero-lead p{color:var(--ink-dim);font-size:.9rem;line-height:1.55;margin:0 0 14px}
+.hero-meta{display:flex;align-items:center;gap:9px;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink-faint)}
+.hero-side{display:flex;flex-direction:column;gap:14px}
+.hero-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:flex;gap:14px;padding:14px;text-decoration:none;transition:border-color .2s}
+.hero-card:hover{border-color:#2c3640}
+.hero-card img{width:96px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0;filter:saturate(.9)}
+.hero-card h3{font-size:.92rem;line-height:1.32;margin:0 0 8px;font-weight:600;color:var(--ink)}
+.hero-card .hero-meta{font-size:.66rem}
+
+/* NAV categorie — tab principali + tag secondari, sostituisce la lista in sidebar */
+.navbar{margin-bottom:26px}
+.nav-primary{display:flex;flex-wrap:wrap;gap:8px 28px;border-bottom:1px solid var(--line)}
+.nav-primary .tab{display:flex;align-items:center;gap:8px;padding-bottom:14px;font-size:1rem;font-weight:600;color:var(--ink-dim);text-decoration:none}
+.nav-primary .tab .n{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:500;color:var(--ink-faint)}
+.nav-primary .tab.active{color:var(--amber);position:relative}
+.nav-primary .tab.active .n{color:var(--amber)}
+.nav-primary .tab.active::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--amber);border-radius:2px}
+.nav-secondary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;padding-top:14px}
+.nav-secondary .tag{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:.76rem;color:var(--ink-faint);text-decoration:none}
+.nav-secondary .tag:hover{color:var(--ink-dim)}
+.nav-secondary .tag.active{color:var(--amber)}
+.nav-secondary .tag-partner{border-left:1px dashed var(--line);padding-left:18px}
+
+/* PARTNER teaser in sidebar */
+.partner-teaser{padding:18px}
+.partner-teaser .partner-top{margin-bottom:12px}
+.partner-teaser .partner-logo{width:38px;height:38px;font-size:1.05rem}
+.partner-teaser .partner-name{font-size:1rem}
+.partner-teaser .partner-tag{font-size:.82rem;margin-bottom:12px}
+.partner-teaser .partner-cta{padding:8px 14px;font-size:.8rem}
+
 /* GRID */
 .layout{display:grid;grid-template-columns:1fr 290px;gap:26px;align-items:start;padding-bottom:60px}
 @media(max-width:980px){.layout{grid-template-columns:1fr}}
@@ -257,6 +306,8 @@ body{
 /* SIDEBAR */
 .side{position:sticky;top:80px;display:flex;flex-direction:column;gap:22px}
 @media(max-width:980px){.side{position:static}}
+.side .movers{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.side .movers-grid{grid-template-columns:1fr}
 
 /* GAUGE */
 .gauge-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px;text-align:center}
@@ -273,23 +324,7 @@ body{
 #fng-val{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;line-height:1;margin-top:10px}
 #fng-class{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);margin-top:6px}
 
-/* CHANNELS NAV */
-.channels{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:10px}
-.channels .head{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.14em;color:var(--ink-faint);padding:8px 10px 12px}
-.chan-btn{
-    display:flex;justify-content:space-between;align-items:center;width:100%;
-    background:transparent;border:none;color:var(--ink-dim);text-align:left;
-    padding:10px 12px;border-radius:8px;cursor:pointer;font-size:.86rem;
-    font-weight:500;font-family:inherit;transition:.15s;
-}
-.chan-btn:hover{background:var(--panel-2);color:var(--ink)}
-.chan-btn.active{background:var(--amber-soft);color:var(--amber)}
-.chan-partner{border:1px dashed var(--line)}
-.chan-partner:hover{border-color:var(--amber)}
-.chan-btn .n{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink-faint)}
-.chan-btn.active .n{color:var(--amber)}
 .cat-ico{color:var(--amber);width:18px;text-align:center;font-size:.92em;margin-right:2px}
-.chan-btn.active .cat-ico{color:var(--amber)}
 
 .pane{display:none}.pane.active{display:block}
 .site-footer{border-top:1px solid var(--line);margin-top:40px;padding:30px 0;text-align:center}
@@ -330,42 +365,95 @@ body{
 
 <div class="wrap">
 
-    <?php if (!empty($ticker_news)): ?>
-    <a class="newsflash" id="newsflash" href="#" target="_blank" rel="noopener">
-        <span class="nf-tag"><span class="nf-dot"></span>ATTUALITÀ</span>
-        <span class="nf-body">
-            <span class="nf-title" id="nf-title"><?php echo htmlspecialchars($ticker_news[0]['title']); ?></span>
-            <span class="nf-source" id="nf-source"><?php echo htmlspecialchars($ticker_news[0]['source']); ?></span>
-        </span>
-        <span class="nf-nav"><span class="nf-count" id="nf-count">1/<?php echo count($ticker_news); ?></span></span>
-    </a>
-    <script id="nf-data" type="application/json"><?php
-        echo json_encode(array_map(fn($a) => [
-            't' => $a['title'], 's' => $a['source'], 'l' => $a['link']
-        ], $ticker_news), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT);
-    ?></script>
+    <div class="mstrip">
+        <?php if (!empty($ticker_news)): ?>
+        <a class="newsflash" id="newsflash" href="#" target="_blank" rel="noopener">
+            <span class="nf-tag"><span class="nf-dot"></span>ATTUALITÀ</span>
+            <span class="nf-body">
+                <span class="nf-title" id="nf-title"><?php echo htmlspecialchars($ticker_news[0]['title']); ?></span>
+                <span class="nf-source" id="nf-source"><?php echo htmlspecialchars($ticker_news[0]['source']); ?></span>
+            </span>
+            <span class="nf-nav"><span class="nf-count" id="nf-count">1/<?php echo count($ticker_news); ?></span></span>
+        </a>
+        <script id="nf-data" type="application/json"><?php
+            echo json_encode(array_map(fn($a) => [
+                't' => $a['title'], 's' => $a['source'], 'l' => $a['link']
+            ], $ticker_news), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT);
+        ?></script>
+        <?php endif; ?>
+
+        <div class="ticker">
+            <div class="ticker-tag"><span class="live"></span>MARKET LIVE</div>
+            <div class="ticker-view"><div class="ticker-row" id="ticker">Sincronizzazione mercati…</div></div>
+        </div>
+    </div>
+
+    <?php if (!empty($hero_articles)): ?>
+    <div class="hero-grid">
+        <?php $lead = $hero_articles[0]; ?>
+        <a class="hero-lead" href="<?php echo htmlspecialchars($lead['link']); ?>" target="_blank" rel="noopener">
+            <img src="<?php echo htmlspecialchars($lead['image_url']); ?>" loading="lazy" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($lead['title'],0,60)); ?>">
+            <div class="hb">
+                <span class="hero-tag">ULTIME 24H</span>
+                <h1><?php echo htmlspecialchars($lead['title']); ?></h1>
+                <?php if (!empty($lead['summary'])): ?><p><?php echo htmlspecialchars(mb_substr($lead['summary'], 0, 160)); ?>…</p><?php endif; ?>
+                <div class="hero-meta"><span class="src"><?php echo htmlspecialchars($lead['source']); ?></span><span>·</span><span><?php echo date('d/m · H:i', $lead['timestamp']); ?></span></div>
+            </div>
+        </a>
+        <?php if (count($hero_articles) > 1): ?>
+        <div class="hero-side">
+            <?php foreach (array_slice($hero_articles, 1, 3) as $side): ?>
+            <a class="hero-card" href="<?php echo htmlspecialchars($side['link']); ?>" target="_blank" rel="noopener">
+                <img src="<?php echo htmlspecialchars($side['image_url']); ?>" loading="lazy" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($side['title'],0,60)); ?>">
+                <div>
+                    <h3><?php echo htmlspecialchars($side['title']); ?></h3>
+                    <div class="hero-meta"><span class="src"><?php echo htmlspecialchars($side['source']); ?></span><span>·</span><span><?php echo date('d/m · H:i', $side['timestamp']); ?></span></div>
+                </div>
+            </a>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
 
-    <div class="ticker">
-        <div class="ticker-tag"><span class="live"></span>MARKET LIVE</div>
-        <div class="ticker-view"><div class="ticker-row" id="ticker">Sincronizzazione mercati…</div></div>
-    </div>
+    <nav class="navbar">
+        <div class="nav-primary">
+            <?php
+            $is_first = true;
+            foreach ($grouped_news_data as $cat => $arts):
+                if (!in_array($cat, $PRIMARY_CATS, true)) { $is_first = false; continue; }
+                $slug = 'c'.md5($cat);
+                $cat_url = '?cat=' . rawurlencode(seo_slugify($cat));
+                $is_active = $SEO_active_cat ? ($cat === $SEO_active_cat) : $is_first;
+            ?>
+            <a class="tab nav-link <?php echo $is_active ? 'active' : ''; ?>" href="<?php echo $cat_url; ?>" data-target="<?php echo $slug; ?>" onclick="showPane(this); return false;">
+                <?php echo category_icon_html($cat); ?> <?php echo htmlspecialchars($cat); ?><span class="n"><?php echo count($arts); ?></span>
+            </a>
+            <?php $is_first = false; endforeach; ?>
+        </div>
+        <div class="nav-secondary">
+            <?php
+            $is_first = true;
+            foreach ($grouped_news_data as $cat => $arts):
+                if (in_array($cat, $PRIMARY_CATS, true)) { $is_first = false; continue; }
+                $slug = 'c'.md5($cat);
+                $cat_url = '?cat=' . rawurlencode(seo_slugify($cat));
+                $is_active = $SEO_active_cat ? ($cat === $SEO_active_cat) : $is_first;
+            ?>
+            <a class="tag nav-link <?php echo $is_active ? 'active' : ''; ?>" href="<?php echo $cat_url; ?>" data-target="<?php echo $slug; ?>" onclick="showPane(this); return false;">
+                <?php echo category_icon_html($cat); ?> <?php echo htmlspecialchars($cat); ?>
+            </a>
+            <?php $is_first = false; endforeach; ?>
+            <?php if (!empty($partners)): ?>
+            <a class="tag nav-link tag-partner" href="#" data-target="cpartner" onclick="showPane(this); return false;">
+                <i class="fas fa-handshake cat-ico" aria-hidden="true"></i> Offerte Partner
+            </a>
+            <?php endif; ?>
+        </div>
+    </nav>
 
     <div class="layout">
         <main>
-            <div class="movers" id="movers">
-                <div class="movers-head">
-                    <span class="movers-title mono">TOP MOVERS · 24H</span>
-                    <span class="movers-sub mono" id="movers-status">caricamento mercati…</span>
-                </div>
-                <div class="movers-grid" id="movers-grid">
-                    <div class="mover-skeleton"></div>
-                    <div class="mover-skeleton"></div>
-                    <div class="mover-skeleton"></div>
-                    <div class="mover-skeleton"></div>
-                </div>
-            </div>
-
             <div class="searchbar">
                 <i class="fas fa-magnifying-glass"></i>
                 <input type="text" id="search" placeholder="Cerca tra tutte le notizie…" autocomplete="off">
@@ -481,27 +569,41 @@ body{
                 <div id="fng-class">in attesa</div>
             </div>
 
-            <nav class="channels">
-                <div class="head">CANALI</div>
-                <?php if (!empty($partners)): ?>
-                <a class="chan-btn chan-partner" href="#" data-target="cpartner" onclick="showPane(this); return false;">
-                    <span><i class="fas fa-handshake cat-ico" aria-hidden="true"></i> Offerte Partner</span>
-                    <span class="n"><?php echo count($partners); ?></span>
-                </a>
-                <?php endif; ?>
-                <?php
-                $is_first = true;
-                foreach ($grouped_news_data as $cat => $arts):
-                    $slug = 'c'.md5($cat);
-                    $cat_url = '?cat=' . rawurlencode(seo_slugify($cat));
-                    $is_active = $SEO_active_cat ? ($cat === $SEO_active_cat) : $is_first;
-                ?>
-                <a class="chan-btn <?php echo $is_active ? 'active' : ''; ?>" href="<?php echo $cat_url; ?>" data-target="<?php echo $slug; ?>" onclick="showPane(this); return false;">
-                    <span><?php echo category_icon_html($cat); ?> <?php echo htmlspecialchars($cat); ?></span>
-                    <span class="n"><?php echo count($arts); ?></span>
-                </a>
-                <?php $is_first = false; endforeach; ?>
-            </nav>
+            <div class="movers" id="movers">
+                <div class="movers-head">
+                    <span class="movers-title mono">TOP MOVERS · 24H</span>
+                    <span class="movers-sub mono" id="movers-status">caricamento mercati…</span>
+                </div>
+                <div class="movers-grid" id="movers-grid">
+                    <div class="mover-skeleton"></div>
+                    <div class="mover-skeleton"></div>
+                    <div class="mover-skeleton"></div>
+                    <div class="mover-skeleton"></div>
+                </div>
+            </div>
+
+            <?php if (!empty($partners)):
+                $tp = $partners[0];
+                $tp_pc = htmlspecialchars($tp['color'] ?: '#e8b04b');
+                $tp_initial = mb_strtoupper(mb_substr($tp['name'], 0, 1));
+            ?>
+            <a class="partner partner-teaser" href="<?php echo htmlspecialchars($tp['url']); ?>" target="_blank" rel="noopener sponsored nofollow" style="--pc:<?php echo $tp_pc; ?>">
+                <div class="partner-top">
+                    <?php if (!empty($tp['logo'])): ?>
+                        <img class="partner-logo" src="<?php echo htmlspecialchars($tp['logo']); ?>" alt="<?php echo htmlspecialchars($tp['name']); ?>">
+                    <?php else: ?>
+                        <span class="partner-logo"><?php echo htmlspecialchars($tp_initial); ?></span>
+                    <?php endif; ?>
+                    <div>
+                        <div class="partner-name"><?php echo htmlspecialchars($tp['name']); ?></div>
+                        <div class="partner-bonus"><?php echo htmlspecialchars($tp['bonus']); ?></div>
+                    </div>
+                </div>
+                <p class="partner-tag"><?php echo htmlspecialchars($tp['tagline']); ?></p>
+                <span class="partner-cta"><?php echo htmlspecialchars($tp['cta'] ?: 'Scopri'); ?> <i class="fas fa-arrow-right"></i></span>
+                <span class="partner-disclaimer">#adv · link referral</span>
+            </a>
+            <?php endif; ?>
         </aside>
     </div>
 
@@ -584,7 +686,7 @@ function shareArticle(btn){
 function showPane(btn){
     clearSearch();
     document.querySelectorAll('.pane:not(#searchResults)').forEach(p=>{p.classList.remove('active');p.style.display='';});
-    document.querySelectorAll('.chan-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
     document.getElementById(btn.dataset.target).classList.add('active');
     btn.classList.add('active');
     // aggiorna l'URL senza ricaricare (per condivisione e SEO lato utente)
