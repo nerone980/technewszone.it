@@ -120,14 +120,14 @@ body{
     text-decoration:none;transition:border-color .2s}
 .newsflash:hover{border-color:#2c3640;border-left-color:var(--amber)}
 .nf-tag{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:0 16px;font-family:'IBM Plex Mono',monospace;
-    font-size:.66rem;font-weight:600;letter-spacing:.14em;color:var(--amber);border-right:1px solid var(--line);height:100%}
+    font-size:.72rem;font-weight:600;letter-spacing:.14em;color:var(--amber);border-right:1px solid var(--line);height:100%}
 .nf-dot{width:6px;height:6px;border-radius:50%;background:var(--down);animation:pulse 1.4s infinite}
 .nf-body{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:0 18px;overflow:hidden}
-.nf-title{color:var(--ink);font-size:.9rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.nf-title{color:var(--ink);font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     transition:opacity .4s}
-.nf-source{flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint)}
+.nf-source{flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:.76rem;color:var(--ink-faint)}
 .nf-nav{flex-shrink:0;padding:0 16px;border-left:1px solid var(--line);height:100%;display:flex;align-items:center}
-.nf-count{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint)}
+.nf-count{font-family:'IBM Plex Mono',monospace;font-size:.76rem;color:var(--ink-faint)}
 .newsflash .nf-title.fade{opacity:0}
 
 /* TICKER */
@@ -154,8 +154,8 @@ body{
 
 /* MARKET STRIP — newsflash + ticker uniti in un'unica fascia */
 .mstrip{display:flex;align-items:stretch;margin:22px 0 26px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
-.mstrip .newsflash{border:none;border-left:3px solid var(--amber);border-right:1px solid var(--line);border-radius:0;margin:0;height:44px;flex-shrink:0;max-width:440px}
-.mstrip .ticker{border:none;border-radius:0;margin:0;height:44px;flex:1}
+.mstrip .newsflash{border:none;border-left:3px solid var(--amber);border-right:1px solid var(--line);border-radius:0;margin:0;height:56px;flex:1 1 60%;max-width:640px}
+.mstrip .ticker{border:none;border-radius:0;margin:0;height:56px;flex:1 1 40%}
 
 /* HERO — vetrina ultime 24h */
 .hero-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:30px}
