@@ -225,18 +225,18 @@ body{padding-top:144px}
 .m-footer-note{font-size:.64rem;color:var(--ink-faint)}
 
 /* NEWSFLASH MOBILE */
-.nf-m{display:flex;align-items:center;gap:0;height:34px;border-top:1px solid var(--line);
+.nf-m{display:flex;align-items:center;gap:0;height:48px;border-top:1px solid var(--line);
     background:var(--panel-2);border-left:3px solid var(--amber);text-decoration:none;overflow:hidden}
 .nf-m-tag{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:0 11px;font-family:'IBM Plex Mono',monospace;
-    font-size:.58rem;font-weight:600;letter-spacing:.1em;color:var(--amber);border-right:1px solid var(--line);height:100%}
+    font-size:.64rem;font-weight:600;letter-spacing:.1em;color:var(--amber);border-right:1px solid var(--line);height:100%}
 .nf-m-dot{width:5px;height:5px;border-radius:50%;background:var(--down);animation:pulse 1.4s infinite}
-.nf-m-title{flex:1;min-width:0;padding:0 12px;color:var(--ink);font-size:.8rem;white-space:nowrap;
+.nf-m-title{flex:1;min-width:0;padding:0 12px;color:var(--ink);font-size:.94rem;font-weight:500;white-space:nowrap;
     overflow:hidden;text-overflow:ellipsis;transition:opacity .4s}
 .nf-m-title.fade{opacity:0}
 
 /* offset header (header-top + newsflash + ticker) */
-.chips{top:130px !important}
-body{padding-top:178px}
+.chips{top:144px !important}
+body{padding-top:192px}
 
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
