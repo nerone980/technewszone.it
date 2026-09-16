@@ -116,7 +116,7 @@ body{
 
 /* NEWSFLASH — slider attualità */
 .newsflash{display:flex;align-items:center;gap:0;background:var(--panel-2);border:1px solid var(--line);
-    border-left:3px solid var(--amber);border-radius:var(--r);overflow:hidden;height:44px;margin:22px 0 0;
+    border-left:3px solid var(--amber);border-radius:var(--r);overflow:hidden;height:56px;margin:22px 0 0;
     text-decoration:none;transition:border-color .2s}
 .newsflash:hover{border-color:#2c3640;border-left-color:var(--amber)}
 .nf-tag{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:0 16px;font-family:'IBM Plex Mono',monospace;
@@ -151,11 +151,6 @@ body{
 .t-item .px{color:var(--ink-dim)}
 .t-up{color:var(--up)}.t-down{color:var(--down)}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* MARKET STRIP — newsflash + ticker uniti in un'unica fascia */
-.mstrip{display:flex;align-items:stretch;margin:22px 0 26px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
-.mstrip .newsflash{border:none;border-left:3px solid var(--amber);border-right:1px solid var(--line);border-radius:0;margin:0;height:56px;flex:1 1 60%;max-width:640px}
-.mstrip .ticker{border:none;border-radius:0;margin:0;height:56px;flex:1 1 40%}
 
 /* HERO — vetrina ultime 24h */
 .hero-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;margin-bottom:30px}
@@ -365,27 +360,25 @@ body{
 
 <div class="wrap">
 
-    <div class="mstrip">
-        <?php if (!empty($ticker_news)): ?>
-        <a class="newsflash" id="newsflash" href="#" target="_blank" rel="noopener nofollow">
-            <span class="nf-tag"><span class="nf-dot"></span>ATTUALITÀ</span>
-            <span class="nf-body">
-                <span class="nf-title" id="nf-title"><?php echo htmlspecialchars($ticker_news[0]['title']); ?></span>
-                <span class="nf-source" id="nf-source"><?php echo htmlspecialchars($ticker_news[0]['source']); ?></span>
-            </span>
-            <span class="nf-nav"><span class="nf-count" id="nf-count">1/<?php echo count($ticker_news); ?></span></span>
-        </a>
-        <script id="nf-data" type="application/json"><?php
-            echo json_encode(array_map(fn($a) => [
-                't' => $a['title'], 's' => $a['source'], 'l' => $a['link']
-            ], $ticker_news), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT);
-        ?></script>
-        <?php endif; ?>
+    <?php if (!empty($ticker_news)): ?>
+    <a class="newsflash" id="newsflash" href="#" target="_blank" rel="noopener nofollow">
+        <span class="nf-tag"><span class="nf-dot"></span>ATTUALITÀ</span>
+        <span class="nf-body">
+            <span class="nf-title" id="nf-title"><?php echo htmlspecialchars($ticker_news[0]['title']); ?></span>
+            <span class="nf-source" id="nf-source"><?php echo htmlspecialchars($ticker_news[0]['source']); ?></span>
+        </span>
+        <span class="nf-nav"><span class="nf-count" id="nf-count">1/<?php echo count($ticker_news); ?></span></span>
+    </a>
+    <script id="nf-data" type="application/json"><?php
+        echo json_encode(array_map(fn($a) => [
+            't' => $a['title'], 's' => $a['source'], 'l' => $a['link']
+        ], $ticker_news), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT);
+    ?></script>
+    <?php endif; ?>
 
-        <div class="ticker">
-            <div class="ticker-tag"><span class="live"></span>MARKET LIVE</div>
-            <div class="ticker-view"><div class="ticker-row" id="ticker">Sincronizzazione mercati…</div></div>
-        </div>
+    <div class="ticker">
+        <div class="ticker-tag"><span class="live"></span>MARKET LIVE</div>
+        <div class="ticker-view"><div class="ticker-row" id="ticker">Sincronizzazione mercati…</div></div>
     </div>
 
     <?php if (!empty($hero_articles)): ?>
