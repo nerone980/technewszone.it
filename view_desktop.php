@@ -159,6 +159,8 @@ body{
 .hero-lead{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;transition:border-color .2s}
 .hero-lead:hover{border-color:#2c3640}
 .hero-lead img{width:100%;height:300px;object-fit:cover;display:block;filter:saturate(.9)}
+.hero-lead img,.hero-lead .hb{transition:opacity .35s}
+.hero-lead.hero-fading img,.hero-lead.hero-fading .hb{opacity:0}
 .hero-lead .hb{padding:22px}
 .hero-tag{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;letter-spacing:.1em;color:var(--amber);background:var(--amber-soft);padding:4px 10px;border-radius:6px;margin-bottom:12px}
 .hero-lead h1{font-size:1.55rem;line-height:1.24;letter-spacing:-.01em;margin:0 0 10px;color:var(--ink);font-weight:700}
@@ -385,15 +387,27 @@ body{
     <?php if (!empty($hero_articles)): ?>
     <div class="hero-grid">
         <?php $lead = $hero_articles[0]; ?>
-        <a class="hero-lead" href="<?php echo htmlspecialchars($lead['link']); ?>" target="_blank" rel="noopener nofollow">
-            <img src="<?php echo htmlspecialchars($lead['image_url']); ?>" fetchpriority="high" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($lead['title'],0,60)); ?>">
+        <a class="hero-lead" id="hero-lead" href="<?php echo htmlspecialchars($lead['link']); ?>" target="_blank" rel="noopener nofollow">
+            <img id="hero-img" src="<?php echo htmlspecialchars($lead['image_url']); ?>" fetchpriority="high" decoding="async" alt="<?php echo htmlspecialchars(mb_substr($lead['title'],0,60)); ?>">
             <div class="hb">
                 <span class="hero-tag">ULTIME 24H</span>
-                <h1><?php echo htmlspecialchars($lead['title']); ?></h1>
-                <?php if (!empty($lead['summary'])): ?><p><?php echo htmlspecialchars(mb_substr($lead['summary'], 0, 160)); ?>…</p><?php endif; ?>
-                <div class="hero-meta"><span class="src"><?php echo htmlspecialchars($lead['source']); ?></span><span>·</span><span><?php echo date('d/m · H:i', $lead['timestamp']); ?></span></div>
+                <h1 id="hero-title"><?php echo htmlspecialchars($lead['title']); ?></h1>
+                <p id="hero-summary" style="<?php echo empty($lead['summary']) ? 'display:none' : ''; ?>"><?php echo !empty($lead['summary']) ? htmlspecialchars(mb_substr($lead['summary'], 0, 160)).'…' : ''; ?></p>
+                <div class="hero-meta"><span class="src" id="hero-source"><?php echo htmlspecialchars($lead['source']); ?></span><span>·</span><span id="hero-date"><?php echo date('d/m · H:i', $lead['timestamp']); ?></span></div>
             </div>
         </a>
+        <?php if (count($hero_articles) > 1): ?>
+        <script id="hero-data" type="application/json"><?php
+            echo json_encode(array_map(fn($a) => [
+                't'   => $a['title'],
+                's'   => $a['source'],
+                'l'   => $a['link'],
+                'img' => $a['image_url'],
+                'd'   => date('d/m · H:i', $a['timestamp']),
+                'sum' => !empty($a['summary']) ? mb_substr($a['summary'], 0, 160) . '…' : '',
+            ], $hero_articles), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT);
+        ?></script>
+        <?php endif; ?>
         <?php if (count($hero_articles) > 1): ?>
         <div class="hero-side">
             <?php foreach (array_slice($hero_articles, 1, 3) as $side): ?>
@@ -674,6 +688,38 @@ function shareArticle(btn){
             tEl.classList.remove('fade');
         },400);
     },6000);
+})();
+
+// hero lead (rotazione automatica in dissolvenza, pausa al passaggio del mouse)
+(function(){
+    const data=document.getElementById('hero-data');
+    if(!data)return;
+    let items=[];try{items=JSON.parse(data.textContent);}catch(e){return;}
+    if(items.length<2)return;
+    const box=document.getElementById('hero-lead'),imgEl=document.getElementById('hero-img'),
+          tEl=document.getElementById('hero-title'),pEl=document.getElementById('hero-summary'),
+          sEl=document.getElementById('hero-source'),dEl=document.getElementById('hero-date');
+    let i=0,paused=false;
+    function show(n){
+        box.href=items[n].l||'#';
+        imgEl.src=items[n].img;
+        imgEl.alt=items[n].t.slice(0,60);
+        tEl.textContent=items[n].t;
+        if(items[n].sum){pEl.textContent=items[n].sum;pEl.style.display='';}else{pEl.style.display='none';}
+        sEl.textContent=items[n].s||'';
+        dEl.textContent=items[n].d||'';
+    }
+    box.addEventListener('mouseenter',()=>paused=true);
+    box.addEventListener('mouseleave',()=>paused=false);
+    setInterval(()=>{
+        if(paused)return;
+        box.classList.add('hero-fading');
+        setTimeout(()=>{
+            i=(i+1)%items.length;
+            show(i);
+            box.classList.remove('hero-fading');
+        },350);
+    },7000);
 })();
 
 // tabs
