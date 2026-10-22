@@ -30,6 +30,7 @@ $ticker_news = array_slice($ticker_news, 0, 12);
 $home_news = [];
 $now = time();
 foreach ($grouped_news_data as $cat => $articles) {
+    if ($cat === 'Offerte') continue; // le offerte restano nella loro categoria, non invadono Home/vetrina
     foreach ($articles as $art) {
         if (($now - $art['timestamp']) < 86400 && ($art['source'] ?? '') !== 'System') $home_news[] = $art;
     }
