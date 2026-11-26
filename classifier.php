@@ -14,11 +14,15 @@
 // Nota: usa termini minuscoli, senza accenti dove possibile.
 $CLASSIFIER_KEYWORDS = [
 
+    // Solo segnali forti e specifici di sconto/promo: le parole generiche da
+    // titolo clickbait ("bomba", "imperdibile", "occasione", "affare") o
+    // ambigue con altre categorie ("promo" = trailer gaming, "risparmio" =
+    // tema di finanza personale) sono state tolte perché rubavano notizie
+    // vere a Tecnologia/Gaming/Finanza facendole passare per Offerte.
     'Offerte' => [
-        'offerta', 'offerte', 'sconto', 'sconti', 'scontato', 'coupon', 'codice sconto',
-        'promozione', 'promo', 'risparmi', 'risparmio', 'prezzo piu basso', 'minimo storico',
-        'black friday', 'cyber monday', 'prime day', 'saldi', 'deal', 'affare', 'in offerta',
-        'crollo prezzo', 'super prezzo', 'bomba', 'imperdibile', 'occasione',
+        'offerta', 'offerte', 'in offerta', 'sconto', 'sconti', 'scontato', 'coupon',
+        'codice sconto', 'promozione', 'prezzo piu basso', 'minimo storico',
+        'black friday', 'cyber monday', 'prime day', 'saldi', 'crollo prezzo', 'super prezzo',
     ],
 
     'Crypto' => [
