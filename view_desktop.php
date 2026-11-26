@@ -26,16 +26,21 @@ foreach ($grouped_news_data as $cat => $articles) {
 usort($ticker_news, fn($a, $b) => $b['timestamp'] - $a['timestamp']);
 $ticker_news = array_slice($ticker_news, 0, 12);
 
-// --- HOME: ultime 24h, ordinate ---
+// --- HOME: ultime 24h, ordinate con leggera priorità alle categorie principali ---
+$PRIMARY_NEWS_CATS = ['Tecnologia', 'Crypto', 'Finanza', 'Gaming'];
+$HOME_RANK_BOOST = 1800; // 30 minuti "virtuali" di priorità, solo per l'ordinamento in Home/vetrina
 $home_news = [];
 $now = time();
 foreach ($grouped_news_data as $cat => $articles) {
     if ($cat === 'Offerte') continue; // le offerte restano nella loro categoria, non invadono Home/vetrina
     foreach ($articles as $art) {
-        if (($now - $art['timestamp']) < 86400 && ($art['source'] ?? '') !== 'System') $home_news[] = $art;
+        if (($now - $art['timestamp']) < 86400 && ($art['source'] ?? '') !== 'System') {
+            $art['_rank'] = $art['timestamp'] + (in_array($cat, $PRIMARY_NEWS_CATS, true) ? $HOME_RANK_BOOST : 0);
+            $home_news[] = $art;
+        }
     }
 }
-usort($home_news, fn($a, $b) => $b['timestamp'] - $a['timestamp']);
+usort($home_news, fn($a, $b) => $b['_rank'] - $a['_rank']);
 if (!empty($home_news)) {
     $grouped_news_data = array_merge(['Home' => array_slice($home_news, 0, 24)], $grouped_news_data);
 }
